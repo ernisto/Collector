@@ -1,4 +1,4 @@
 {
-  "name": "Wrapper",
+  "name": "collector",
   "tree": { "$path": "src" }
 }
