@@ -36,6 +36,11 @@ local function Collector(params: params)
         for _,item in {...} do items[item] = true end
         return ...
     end
+    function self:remove(...: any)
+        
+        for _,item in {...} do items[item] = nil end
+        return ...
+    end
     function self:sub(params: params)
         
         assert(not self.hasCollected, `already collected`)

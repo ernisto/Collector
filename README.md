@@ -11,12 +11,16 @@ Collector = "ernisto/collector@0.1.0"
 ```lua
 local trash = Collector{ lifetime=5 } --:collect() after 5 seconds
 
-trash:add(function() print('collected') end)
-trash:add(task.delay(2, print, 'cavalo'))
 trash:add(Instance.new('Part'))
 trash:add(workspace.ChildAdded:Connect(warn))
 trash:add(Promise.try(fetchData, player))
 trash:add(FastSignal.new():Connect(print))
+
+local callback, thread = trash:add(
+    function() print('collected') end,
+    task.delay(2, print, 'cavalo')
+)
+trash:remove(callback, thread)
 
 local subTrash = trash:sub{ lifetime=2 }
 subTrash:add(print)
