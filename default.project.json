@@ -1,0 +1,4 @@
+{
+  "name": "Wrapper",
+  "tree": { "$path": "src" }
+}
