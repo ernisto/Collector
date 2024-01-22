@@ -9,6 +9,7 @@ Collector = "ernisto/collector@0.1.1"
 
 ## Usage
 ```lua
+local eternalTrash = Collector()
 local trash = Collector{ lifetime=5 } --:collect() after 5 seconds
 
 trash:add(Instance.new('Part'))

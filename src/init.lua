@@ -1,6 +1,6 @@
 export type params = { lifetime: number? }
 
-local function Collector(params: params)
+local function Collector(params: params?)
     
     local items = {}
     local self = { hasCollected = false }
@@ -41,14 +41,14 @@ local function Collector(params: params)
         for _,item in {...} do items[item] = nil end
         return ...
     end
-    function self:sub(params: params)
+    function self:sub(params: params?)
         
         assert(not self.hasCollected, `already collected`)
         return self:add(Collector(params))
     end
     
     --// Setup
-    if params.lifetime then self:add(task.delay(params.lifetime, function() self:collect() end)) end
+    if params and params.lifetime then self:add(task.delay(params.lifetime, function() self:collect() end)) end
     
     --// End
     return self
