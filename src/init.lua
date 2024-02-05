@@ -1,20 +1,21 @@
 --!strict
+export type params = { lifetime: number? }
 
 export type Collector = {
 	collect: (self: Collector) -> (),
 	destroy: (self: Collector) -> (),
-	add: (self: Collector, ...any) -> ...any,
-	remove: (self: Collector, ...any) -> ...any,
-	sub: (self: Collector, lifetime: number?) -> Collector,
+	add: <T...>(self: Collector, T...) -> T...,
+	remove: <T...>(self: Collector, T...) -> T...,
+	sub: (self: Collector, params: params?) -> Collector,
 }
 
-local function Collector(lifetime: number?): Collector
+local function Collector(params: params?): Collector
 
 	local items = {} :: {[any]: true}
 	local self = {} :: Collector
 
 	--// Methods
-	function self:destroy() self:collect() end --// alias
+	function self:destroy() return self:collect() end --// alias
 	function self:collect()
 
 		for item in items do
@@ -36,23 +37,23 @@ local function Collector(lifetime: number?): Collector
 
 		table.clear(items)
 	end
-	function self:add(...: any)
+	function self:add<T...>(...: T...): T...
 
-		for _,item in {...} do items[item] = true end
+		for _,item in {select(1, ...)} do items[item] = true end
 		return ...
 	end
-	function self:remove(...: any)
+	function self:remove<T...>(...: T...): T...
 
-		for _,item in {...} do items[item] = nil end
+		for _,item in {select(1, ...)} do items[item] = nil end
 		return ...
 	end
-	function self:sub(lifetime: number?)
+	function self:sub(params: params?): Collector
 
-		return self:add(Collector(lifetime))
+		return self:add(Collector(params))
 	end
 
 	--// Setup
-	if lifetime then self:add(task.delay(lifetime, function() self:collect() end)) end
+	if params and params.lifetime then self:add(task.delay(params.lifetime, function() self:collect() end)) end
 
 	--// End
 	return self
